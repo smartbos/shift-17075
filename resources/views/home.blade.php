@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    You are logged in!
+                    <a href="/reservations/create" class="btn btn-primary">예약 정보 추가</a>
                 </div>
             </div>
         </div>
