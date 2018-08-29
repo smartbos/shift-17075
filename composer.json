@@ -9,7 +9,6 @@
         "bugsnag/bugsnag-laravel": "^2.0",
         "fabpot/goutte": "^3.2",
         "fideloper/proxy": "^4.0",
-        "laravel/dusk": "^4.0",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "^1.0",
         "rap2hpoutre/fast-excel": "^0.6.0"
