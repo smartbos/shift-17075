@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Reservation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class ReservationController extends Controller
 {
@@ -30,18 +32,38 @@ class ReservationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        //
+        $rows = (new FastExcel())->import($request->file('xls'));
+
+        // insert
+        foreach ($rows as $row) {
+            $insertData = $this->transform($row);
+            if ($row['상태'] == '확정' && $row['결제상태'] == '결제완료') {
+                try {
+                    Reservation::create($insertData);
+                } catch (\PDOException $e) {
+
+                }
+            }
+
+            if ($row['상태'] == '취소') {
+                $reservation = Reservation::where($insertData)->first();
+                if ($reservation) {
+                    $reservation->delete();
+                }
+            }
+        }
+
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Reservation  $reservation
+     * @param  \App\Reservation $reservation
      * @return \Illuminate\Http\Response
      */
     public function show(Reservation $reservation)
@@ -52,7 +74,7 @@ class ReservationController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Reservation  $reservation
+     * @param  \App\Reservation $reservation
      * @return \Illuminate\Http\Response
      */
     public function edit(Reservation $reservation)
@@ -63,8 +85,8 @@ class ReservationController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Reservation  $reservation
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Reservation $reservation
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Reservation $reservation)
@@ -75,11 +97,38 @@ class ReservationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Reservation  $reservation
+     * @param  \App\Reservation $reservation
      * @return \Illuminate\Http\Response
      */
     public function destroy(Reservation $reservation)
     {
         //
+    }
+
+    private function transform($row)
+    {
+        $result['room'] = $row['상품'];
+        $result['name'] = $row['예약자'];
+
+        $result['phone'] = mb_substr($row['전화번호'], - 4, 4);
+        $date = mb_substr($row['이용일시'], 0, strpos($row['이용일시'], '('));
+        $time = mb_substr($row['이용일시'], strpos($row['이용일시'], ')'));
+
+        $timeArray = explode(' ', $time);
+        $timeArray2 = explode('~', $timeArray[1]);
+        $fromArray = explode(':', $timeArray2[0]);
+        $toArray = explode(':', $timeArray2[1]);
+        if ($timeArray[0] == '오후') {
+            $fromArray[0] = $fromArray[0] + 12;
+            $toArray[0] = $toArray[0] + 12;
+        }
+        $fromString = implode(':', $fromArray);
+        $toString = implode(':', $toArray);
+
+        //dd($date);
+        $result['from'] = Carbon::createFromFormat('y. m. d. H:i', $date . $fromString);
+        $result['to'] = Carbon::createFromFormat('y. m. d. H:i', $date . $toString);
+
+        return $result;
     }
 }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Customer;
+use App\Roomcode;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class CustomerController extends Controller
+class RoomcodeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +15,9 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $customers = Customer::orderBy('name')->get();
+        $roomcodes = Roomcode::where('date','>=', Carbon::today())->get();
 
-        return view('customers.index', ['customers' => $customers]);
+        return view('roomcodes.index', ['roomcodes' => $roomcodes]);
     }
 
     /**
@@ -37,13 +38,7 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $inputs = [
-            'name' => $request->input('name'),
-            'phone' => $request->input('phone'),
-            'phone_last' => substr($request->input('phone'), -4)
-        ];
-
-        Customer::create($inputs);
+        Roomcode::create($request->all());
 
         return back();
     }
@@ -51,10 +46,10 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Customer  $customer
+     * @param  \App\Roomcode  $roomcode
      * @return \Illuminate\Http\Response
      */
-    public function show(Customer $customer)
+    public function show(Roomcode $roomcode)
     {
         //
     }
@@ -62,10 +57,10 @@ class CustomerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Customer  $customer
+     * @param  \App\Roomcode  $roomcode
      * @return \Illuminate\Http\Response
      */
-    public function edit(Customer $customer)
+    public function edit(Roomcode $roomcode)
     {
         //
     }
@@ -74,10 +69,10 @@ class CustomerController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Customer  $customer
+     * @param  \App\Roomcode  $roomcode
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, Roomcode $roomcode)
     {
         //
     }
@@ -85,10 +80,10 @@ class CustomerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Customer  $customer
+     * @param  \App\Roomcode  $roomcode
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Customer $customer)
+    public function destroy(Roomcode $roomcode)
     {
         //
     }

@@ -26,6 +26,10 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->command('send_sms')->hourly();
+        $schedule->command('send_sms')->hourlyAt(20);
+        $schedule->command('send_sms')->hourlyAt(30);
+        $schedule->command('send_sms')->hourlyAt(50);
     }
 
     /**

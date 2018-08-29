@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Customer;
+use App\Reservation;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -19,10 +22,19 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
+     * @param Customer $customer
+     * @param Reservation $reservation
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Customer $customer)
     {
-        return view('home');
+        $reservations = Reservation::where('from', '>', Carbon::today())->paginate(30);
+
+        $unregisteredCustomers = $customer->getUnregistered();
+
+        return view('home', [
+            'reservations' => $reservations,
+            'unregisteredCustomers' => $unregisteredCustomers
+        ]);
     }
 }
