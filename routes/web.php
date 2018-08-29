@@ -17,8 +17,10 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->middleware('auth')->name('home');
+Route::middleware(['auth', 'admin'])->group(function(){
+    Route::get('/home', 'HomeController@index')->name('home');
 
-Route::resource('/reservations', 'ReservationController');
-Route::resource('/customers', 'CustomerController');
-Route::resource('/roomcodes', 'RoomcodeController');
+    Route::resource('/reservations', 'ReservationController');
+    Route::resource('/customers', 'CustomerController');
+    Route::resource('/roomcodes', 'RoomcodeController');
+});
