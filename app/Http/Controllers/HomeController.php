@@ -28,7 +28,7 @@ class HomeController extends Controller
      */
     public function index(Customer $customer)
     {
-        $reservations = Reservation::where('from', '>', Carbon::today())->paginate(30);
+        $reservations = Reservation::where('from', '>', Carbon::today())->orderBy('from')->paginate(30);
 
         $unregisteredCustomers = $customer->getUnregistered();
 
