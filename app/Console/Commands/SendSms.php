@@ -55,7 +55,7 @@ class SendSms extends Command
         $reservation = new Reservation();
         $reservations = $reservation->toSendSms();
 
-        Log::info($reservations);
+        Log::channel('bugsnag')->info($reservations);
 
         $smsSender = new SmsSender();
         $smsSender->send($reservations);
