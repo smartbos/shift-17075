@@ -14,17 +14,16 @@ class Reservation extends Model
 
     public function toSendSms()
     {
-        $after10Min = Carbon::now()->addMinutes(10)->format('Y-m-d H:i:00');
-        $after1hour = Carbon::now()->addHour(1)->format('Y-m-d H:i:00');
+        $now = Carbon::now();
 
-        $normalReservations = Reservation::where('from', '=', $after10Min)->get();
-        $kangReservation = Reservation::where('from', '=', $after1hour)
-            ->where('name', '강신구')
-            ->get();
-
-        $merged = new Collection();
-        $merged->merge($normalReservations)->merge($kangReservation);
-
-        return $merged;
+        if($now->minute % 30 == 0) {
+            $from = Carbon::now()->addHour(1)->format('Y-m-d H:i:00');
+            return Reservation::where('from', '=', $from)
+                ->where('name', '강신구')
+                ->get();
+        } else {
+            $from = Carbon::now()->addMinutes(10)->format('Y-m-d H:i:00');
+            return Reservation::where('from', '=', $from)->get();
+        }
     }
 }
