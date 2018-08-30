@@ -35,15 +35,18 @@ class CustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Customer $customer)
     {
-        $inputs = [
-            'name' => $request->input('name'),
-            'phone' => $request->input('phone'),
-            'phone_last' => substr($request->input('phone'), -4)
-        ];
-
-        Customer::create($inputs);
+        if($request->hasFile('file')) {
+            $customer->storeUsingFile($request->file('file'));
+        } else {
+            $inputs = [
+                'name' => $request->input('name'),
+                'phone' => $request->input('phone'),
+                'phone_last' => substr($request->input('phone'), -4)
+            ];
+            $customer->create($inputs);
+        }
 
         return back();
     }

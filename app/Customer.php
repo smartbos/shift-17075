@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class Customer extends Model
 {
@@ -24,5 +25,24 @@ class Customer extends Model
         }
 
         return $unRegisteredCustomers;
+    }
+
+    public function storeUsingFile($file)
+    {
+        $rows = (new FastExcel())->import($file);
+
+        foreach ($rows as $row) {
+            try {
+                $inputs = [
+                    'name' => $row['이름'],
+                    'phone' => str_replace('-', '', $row['휴대폰']),
+                    'phone_last' => substr($row['휴대폰'], -4)
+                ];
+
+                $this->create($inputs);
+            } catch (\Exception $e) {
+
+            }
+        }
     }
 }

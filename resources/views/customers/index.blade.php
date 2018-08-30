@@ -51,6 +51,21 @@
                         </form>
                     </div>
                 </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">파일로 추가</div>
+
+                    <div class="card-body">
+                        <form action="/customers" method="POST" enctype="multipart/form-data">
+                            {{ csrf_field() }}
+                            <div class="form-group">
+                                <input type="file" class="form-control" name="file" placeholder="file">
+                            </div>
+
+                            <input type="submit" class="btn btn-primary">
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
