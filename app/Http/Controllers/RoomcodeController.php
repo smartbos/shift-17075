@@ -36,9 +36,13 @@ class RoomcodeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Roomcode $roomcode)
     {
-        Roomcode::create($request->all());
+        if($request->hasFile('file')) {
+            $roomcode->storeUsingFile($request->file('file'));
+        } else {
+            $roomcode->create($request->all());
+        }
 
         return back();
     }

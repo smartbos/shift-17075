@@ -4,8 +4,10 @@ namespace App\Console\Commands;
 
 use App\Reservation;
 use App\SmsSender;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 class SendSms extends Command
@@ -52,6 +54,8 @@ class SendSms extends Command
 
         $reservation = new Reservation();
         $reservations = $reservation->toSendSms();
+
+        Log::info($reservations);
 
         $smsSender = new SmsSender();
         $smsSender->send($reservations);
