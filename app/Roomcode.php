@@ -7,7 +7,7 @@ use Rap2hpoutre\FastExcel\FastExcel;
 
 class Roomcode extends Model
 {
-    protected $fillable = ['date', 'code'];
+    protected $fillable = ['date', 'code', 'room_type'];
 
     public function storeUsingFile($file)
     {
@@ -19,7 +19,8 @@ class Roomcode extends Model
             try {
                 $this->create([
                     'date' => $row['날짜'],
-                    'code' => $code
+                    'code' => $code,
+                    'room_type' => $row['룸']
                 ]);
             } catch (\Exception $e) {
 

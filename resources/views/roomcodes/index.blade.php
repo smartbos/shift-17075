@@ -11,11 +11,13 @@
                             <tr>
                                 <th>일시</th>
                                 <th>코드</th>
+                                <th>룸</th>
                             </tr>
                             @forelse($roomcodes as $code)
                                 <tr>
                                     <td>{{ $code->date }}</td>
                                     <td>{{ $code->code }}</td>
+                                    <td>{{ $code->room_type }}</td>
                                 </tr>
                             @empty
                                 <tr>
@@ -39,6 +41,15 @@
 
                         <form action="/roomcodes" method="POST">
                             {{ csrf_field() }}
+
+                            <div class="form-group">
+                                <select name="room_type" class="form-control">
+                                    <option value="3">3인실</option>
+                                    <option value="6">6인실</option>
+                                    <option value="8">8인실</option>
+                                </select>
+                            </div>
+
                             <div class="form-group">
                                 <input type="text" class="form-control" name="code" placeholder="code">
                             </div>

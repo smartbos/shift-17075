@@ -25,7 +25,9 @@ class SmsSender
 
             $now = Carbon::now();
 
-            $roomcode = Roomcode::where('date', $now->format('Ymd'))->first();
+            $roomcode = Roomcode::where('date', $now->format('Ymd'))
+                ->where('room_type', mb_substr($reservation->room, 5, 1))
+                ->first();
 
             $content = "[일공공] {$now->format('m월 d일')}
 {$reservation->from->format('H:i')}~{$reservation->to->format('H:i')} 
