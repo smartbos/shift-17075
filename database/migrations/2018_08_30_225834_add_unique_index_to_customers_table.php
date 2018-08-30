@@ -13,7 +13,7 @@ class AddUniqueIndexToCustomersTable extends Migration
      */
     public function up()
     {
-        Schema::table('roomcodes', function (Blueprint $table) {
+        Schema::table('customers', function (Blueprint $table) {
             $table->unique(['name', 'phone']);
         });
     }
