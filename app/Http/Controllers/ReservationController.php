@@ -34,31 +34,18 @@ class ReservationController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
+     * @param Reservation $reservation
      * @return \Illuminate\Http\Response
+     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \Box\Spout\Reader\Exception\ReaderNotOpenedException
      */
-    public function store(Request $request)
+    public function store(Request $request, Reservation $reservation)
     {
-        $rows = (new FastExcel())->import($request->file('xls'));
-
-        // insert
-        foreach ($rows as $row) {
-            if($row['상태']) {
-                $insertData = $this->transform($row);
-                if ($row['상태'] == '확정' && $row['결제상태'] == '결제완료') {
-                    try {
-                        Reservation::create($insertData);
-                    } catch (\PDOException $e) {
-
-                    }
-                }
-
-                if ($row['상태'] == '취소') {
-                    $reservation = Reservation::where($insertData)->first();
-                    if ($reservation) {
-                        $reservation->delete();
-                    }
-                }
-            }
+        if($request->hasFile('xls')) {
+            $reservation->storeUsingFile($request->file('xls'));
+        } else {
+            $reservation->storeUsingSms($request->input('sms'));
         }
 
         return redirect('/home');
@@ -107,46 +94,5 @@ class ReservationController extends Controller
     public function destroy(Reservation $reservation)
     {
         //
-    }
-
-    private function transform($row)
-    {
-        $result['room'] = $row['상품'];
-        $result['name'] = $row['예약자'];
-
-        $result['phone'] = mb_substr($row['전화번호'], - 4, 4);
-        $date = $fromDate = $toDate = mb_substr($row['이용일시'], 0, strpos($row['이용일시'], '('));
-        $time = mb_substr($row['이용일시'], strpos($row['이용일시'], ')'));
-
-        $timeArray = explode(' ', $time);
-        $timeArray2 = explode('~', $timeArray[1]);
-        $fromArray = explode(':', $timeArray2[0]);
-        $toArray = explode(':', $timeArray2[1]);
-        if ($timeArray[0] == '오후') { // 오후 12:00~2:00 | 11:00~12:00 |
-            if($fromArray[0] != 12) {
-                $fromArray[0] = $fromArray[0] + 12; // 24 | 23
-            }
-
-            $toArray[0] = $toArray[0] + 12; // 14 | 24
-
-            if($toArray[0] == 24) {
-                $toArray[0] = 0;
-                $toDateCarbon = Carbon::createFromFormat('y. m. d.', $toDate);
-                $toDate = $toDateCarbon->addDay(1)->format('y. m. d.');
-            }
-        } else {
-            if ($toArray[0] < $fromArray[0]) {
-                $toArray[0] = $toArray[0] + 12;
-            }
-        }
-
-        $fromString = implode(':', $fromArray);
-        $toString = implode(':', $toArray);
-
-        //dd($date);
-        $result['from'] = Carbon::createFromFormat('y. m. d. H:i', $fromDate . $fromString);
-        $result['to'] = Carbon::createFromFormat('y. m. d. H:i', $toDate . $toString);
-
-        return $result;
     }
 }
