@@ -122,14 +122,17 @@ class ReservationController extends Controller
         $timeArray2 = explode('~', $timeArray[1]);
         $fromArray = explode(':', $timeArray2[0]);
         $toArray = explode(':', $timeArray2[1]);
-        if ($timeArray[0] == '오후') {
-            $fromArray[0] = $fromArray[0] + 12;
-            $toArray[0] = $toArray[0] + 12;
+        if ($timeArray[0] == '오후') { // 오후 12:00~2:00 | 11:00~12:00 |
+            if($fromArray[0] != 12) {
+                $fromArray[0] = $fromArray[0] + 12; // 24 | 23
+            }
 
-            if($toArray[0] < $fromArray[0]) {
-                $toArray[0] = $toArray[0] - 12;
+            $toArray[0] = $toArray[0] + 12; // 14 | 24
+
+            if($toArray[0] == 24) {
+                $toArray[0] = 0;
                 $toDateCarbon = Carbon::createFromFormat('y. m. d.', $toDate);
-                $toDate = $toDateCarbon->format('y. m. d.');
+                $toDate = $toDateCarbon->addDay(1)->format('y. m. d.');
             }
         } else {
             if ($toArray[0] < $fromArray[0]) {
