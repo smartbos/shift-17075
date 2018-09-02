@@ -136,7 +136,7 @@ class Reservation extends Model
         $toArray = explode(' ', $toInfo);
         $toTimeArray = explode(':', $toArray[1]);
         if($toArray[0] == '오후') {
-            $data['to'] = $date . ' ' . ($toTimeArray[0] + 12) . ':' . $toTimeArray[1];
+            $data['to'] = Carbon::createFromFormat('Y.m.d H:i', $date . ' ' . ($toTimeArray[0] + 12) . ':' . filter_var($toTimeArray[1], FILTER_SANITIZE_NUMBER_INT));
         } else {
             if($toTimeArray[0] == 0) {
                 $toDateCarbon = Carbon::createFromFormat('Y.m.d', $date);
