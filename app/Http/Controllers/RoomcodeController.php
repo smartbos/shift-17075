@@ -15,7 +15,7 @@ class RoomcodeController extends Controller
      */
     public function index()
     {
-        $roomcodes = Roomcode::where('date','>=', Carbon::today())->orderBy('date')->get();
+        $roomcodes = Roomcode::where('date','>=', Carbon::today())->orderBy('date')->orderBy('room_type')->get();
 
         return view('roomcodes.index', ['roomcodes' => $roomcodes]);
     }

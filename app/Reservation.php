@@ -5,6 +5,8 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Maatwebsite\Excel\Excel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 class Reservation extends Model
@@ -30,7 +32,14 @@ class Reservation extends Model
 
     public function storeUsingFile($file)
     {
-        $rows = (new FastExcel())->import($file);
+        // 의미없는 첫 두 줄을 제거하고 파일을 다시 만듦
+        $sheet = IOFactory::load($file);
+        $activeSheet = $sheet->getActiveSheet();
+        $activeSheet->removeRow(1, 2);
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($sheet, "Xlsx");
+        $writer->save(storage_path("temp.xlsx"));
+
+        $rows = (new FastExcel())->import(storage_path('temp.xlsx'));
 
         // insert
         foreach ($rows as $row) {
