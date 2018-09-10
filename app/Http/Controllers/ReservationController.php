@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Customer;
 use App\Reservation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -15,9 +16,16 @@ class ReservationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Customer $customer)
     {
-        //
+        $reservations = Reservation::where('from', '>', Carbon::today())->orderBy('from')->paginate(30);
+
+        $unregisteredCustomers = $customer->getUnregistered();
+
+        return view('home', [
+            'reservations' => $reservations,
+            'unregisteredCustomers' => $unregisteredCustomers
+        ]);
     }
 
     /**
@@ -48,7 +56,7 @@ class ReservationController extends Controller
             $reservation->storeUsingSms($request->input('sms'));
         }
 
-        return redirect('/home');
+        return redirect('/reservations');
     }
 
     /**

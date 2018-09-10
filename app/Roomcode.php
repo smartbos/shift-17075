@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Rap2hpoutre\FastExcel\FastExcel;
 
@@ -26,5 +27,10 @@ class Roomcode extends Model
 
             }
         }
+    }
+
+    public function scopeToday($query)
+    {
+        return $query->where('date', Carbon::today()->format('Y-m-d'));
     }
 }

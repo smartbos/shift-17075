@@ -92,7 +92,7 @@ class Reservation extends Model
             if($fromArray[0] == 12) {
                 $fromArray[0] = 0;
             }
-            
+
             if ($toArray[0] < $fromArray[0]) {
                 $toArray[0] = $toArray[0] + 12;
             }
