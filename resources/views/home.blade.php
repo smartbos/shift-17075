@@ -66,9 +66,16 @@
 
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header">사물함</div>
+                <div class="card-header">만료된 사물함</div>
 
                 <div class="card-body">
+                    @foreach($expiredLockers as $locker)
+                        <div>
+                            <span class="mr-2">{{ $locker->num }}</span>
+                            <span class="mr-2">{{ $locker->username }}</span>
+                            <span class="mr-2">{{ $locker->to }}</span>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

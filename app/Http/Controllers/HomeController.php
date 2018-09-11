@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
+use App\Locker;
 use App\Reservation;
 use App\Roomcode;
 use Carbon\Carbon;
@@ -27,12 +28,15 @@ class HomeController extends Controller
      * @param Reservation $reservation
      * @return \Illuminate\Http\Response
      */
-    public function index(Roomcode $roomcode)
+    public function index(Roomcode $roomcode, Locker $locker)
     {
         $todayCodes = $roomcode->today()->orderBy('room_type')->get();
 
+        $expiredLockers = $locker->expired()->orderBy('num')->get();
+
         return view('home', [
-            'roomcodes' => $todayCodes
+            'roomcodes' => $todayCodes,
+            'expiredLockers' => $expiredLockers
         ]);
     }
 }

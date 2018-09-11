@@ -23,4 +23,5 @@ Route::middleware(['auth', 'admin'])->group(function(){
     Route::resource('/reservations', 'ReservationController');
     Route::resource('/customers', 'CustomerController');
     Route::resource('/roomcodes', 'RoomcodeController');
+    Route::resource('/lockers', 'LockerController');
 });
