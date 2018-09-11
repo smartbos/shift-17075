@@ -22,7 +22,7 @@ class ReservationController extends Controller
 
         $unregisteredCustomers = $customer->getUnregistered();
 
-        return view('home', [
+        return view('reservations.index', [
             'reservations' => $reservations,
             'unregisteredCustomers' => $unregisteredCustomers
         ]);
