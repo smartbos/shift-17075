@@ -28,15 +28,18 @@ class HomeController extends Controller
      * @param Reservation $reservation
      * @return \Illuminate\Http\Response
      */
-    public function index(Roomcode $roomcode, Locker $locker)
+    public function index(Roomcode $roomcode, Locker $locker, Reservation $reservation)
     {
         $todayCodes = $roomcode->today()->orderBy('room_type')->get();
 
         $expiredLockers = $locker->expired()->orderBy('num')->get();
 
+        $todayReservations = $reservation->today()->orderBy('from')->get();
+
         return view('home', [
             'roomcodes' => $todayCodes,
-            'expiredLockers' => $expiredLockers
+            'expiredLockers' => $expiredLockers,
+            'todayReservations' => $todayReservations
         ]);
     }
 }

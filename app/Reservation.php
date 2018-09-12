@@ -15,6 +15,11 @@ class Reservation extends Model
 
     protected $dates = ['from', 'to','created_at', 'updated_at'];
 
+    public function scopeToday($query)
+    {
+        return $query->whereBetween('from', [Carbon::today()->format('Y-m-d'), Carbon::today()->addDay()->format('Y-m-d')]);
+    }
+
     public function toSendSms()
     {
         $now = Carbon::now();

@@ -5,6 +5,22 @@
     <div class="row justify-content-center">
         <div class="col-md-4">
             <div class="card">
+                <div class="card-header">오늘 예약자 정보</div>
+
+                <div class="card-body">
+                    @forelse($todayReservations as $reservation)
+                        <div>
+                            <span>{{ $reservation->name }}</span>
+                            <span>{{ $reservation->from->format('H:i') }}</span>
+                            <span>{{ $reservation->to->format('H:i') }}</span>
+                            <span>{{ $reservation->room }}</span>
+                        </div>
+                    @empty
+                        <p>예약이 없습니다.</p>
+                    @endforelse
+                </div>
+            </div>
+            <div class="card mt-3">
                 <div class="card-header">예약 정보 문자로 입력</div>
 
                 <div class="card-body">
