@@ -3,10 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Locker;
+use App\LockerLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LockerController extends Controller
 {
+    /**
+     * @var LockerLog
+     */
+    private $lockerLog;
+
+    public function __construct(LockerLog $lockerLog)
+    {
+        $this->lockerLog = $lockerLog;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -71,16 +83,20 @@ class LockerController extends Controller
      */
     public function update(Request $request, Locker $locker)
     {
-        $inputs = $request->only('username', 'from');
+        DB::transaction(function () use ($request, $locker) {
+            $this->backup($locker);
 
-        if(!$inputs['username']) {
-            $inputs['from'] = null;
-            $inputs['to'] = null;
-        } else {
-            $inputs['to'] = $locker->calcLastday($request->from);
-        }
+            $inputs = $request->only('username', 'from');
 
-        $locker->update($inputs);
+            if(!$inputs['username']) {
+                $inputs['from'] = null;
+                $inputs['to'] = null;
+            } else {
+                $inputs['to'] = $locker->calcLastday($request->from);
+            }
+
+            $locker->update($inputs);
+        });
 
         return back();
     }
@@ -94,5 +110,16 @@ class LockerController extends Controller
     public function destroy(Locker $locker)
     {
         //
+    }
+
+    private function backup(Locker $locker)
+    {
+        if($locker->username) {
+            $before = $locker->toArray();
+            unset($before['created_at']);
+            unset($before['updated_at']);
+
+            $this->lockerLog->create($before);
+        }
     }
 }
