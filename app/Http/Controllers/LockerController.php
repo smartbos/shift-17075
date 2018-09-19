@@ -109,7 +109,16 @@ class LockerController extends Controller
      */
     public function destroy(Locker $locker)
     {
-        //
+        DB::transaction(function() use ($locker){
+            $this->backup($locker);
+
+            $locker->username = null;
+            $locker->from = null;
+            $locker->to = null;
+            $locker->save();
+        });
+
+        return back();
     }
 
     private function backup(Locker $locker)
