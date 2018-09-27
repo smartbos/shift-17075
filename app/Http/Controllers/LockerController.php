@@ -22,13 +22,16 @@ class LockerController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Locker $locker
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Locker $locker)
     {
-        $lockers = Locker::all();
+        $lockers = $locker->all();
 
-        return view('lockers.index', ['lockers' => $lockers]);
+        $expiredLockers = $locker->expired()->orderBy('num')->get();
+
+        return view('lockers.index', ['lockers' => $lockers, 'expiredLockers' => $expiredLockers]);
     }
 
     /**
@@ -86,7 +89,7 @@ class LockerController extends Controller
         DB::transaction(function () use ($request, $locker) {
             $this->backup($locker);
 
-            $inputs = $request->only('username', 'from');
+            $inputs = $request->only('username', 'from' , 'password');
 
             if(!$inputs['username']) {
                 $inputs['from'] = null;
@@ -125,6 +128,8 @@ class LockerController extends Controller
     {
         if($locker->username) {
             $before = $locker->toArray();
+            $before['locker_id'] = $before['id'];
+            unset($before['id']);
             unset($before['created_at']);
             unset($before['updated_at']);
 

@@ -4,6 +4,20 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
+                <div class="card mb-3">
+                    <div class="card-header">만료된 사물함</div>
+
+                    <div class="card-body">
+                        @foreach($expiredLockers as $locker)
+                            <div>
+                                <span class="mr-2">{{ $locker->num }}</span>
+                                <span class="mr-2">{{ $locker->username }}</span>
+                                <span class="mr-2">{{ $locker->to }}</span>
+                                <span class="mr-2">{{ $locker->password }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header">사물함</div>
 

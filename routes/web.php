@@ -11,7 +11,16 @@
 |
 */
 
+use Dacastro4\LaravelGmail\Facade\LaravelGmail;
+
 Route::get('/', function () {
+    if(\Illuminate\Support\Facades\Auth::check()) {
+        $user = \Illuminate\Support\Facades\Auth::user();
+        if($user->isAdmin()) {
+            return redirect('/home');
+        }
+    }
+
     return view('welcome');
 });
 
@@ -24,4 +33,18 @@ Route::middleware(['auth', 'admin'])->group(function(){
     Route::resource('/customers', 'CustomerController');
     Route::resource('/roomcodes', 'RoomcodeController');
     Route::resource('/lockers', 'LockerController');
+});
+
+Route::get('/oauth/gmail', function (){
+    return LaravelGmail::redirect();
+});
+
+Route::get('/oauth/gmail/callback', function (){
+    LaravelGmail::makeToken();
+    return redirect()->to('/');
+});
+
+Route::get('/oauth/gmail/logout', function (){
+    LaravelGmail::logout(); //It returns exception if fails
+    return redirect()->to('/');
 });

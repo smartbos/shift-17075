@@ -90,6 +90,7 @@
                             <span class="mr-2">{{ $locker->num }}</span>
                             <span class="mr-2">{{ $locker->username }}</span>
                             <span class="mr-2">{{ $locker->to }}</span>
+                            <span class="mr-2">{{ $locker->password }}</span>
                         </div>
                     @endforeach
                 </div>
