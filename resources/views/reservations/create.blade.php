@@ -20,6 +20,10 @@
                                 <input type="file" class="form-control-file" name="xls">
                             </div>
 
+                            <div class="form-group">
+                                <input type="checkbox" value="1" name="type" /> 강신구
+                            </div>
+
                             <input type="submit" class="btn btn-primary">
                         </form>
                     </div>

@@ -41,6 +41,11 @@
                                 <input type="file" class="form-control-file" name="xls">
                             </div>
 
+                            <div class="form-group form-check">
+                                <input type="checkbox" class="form-check-input" name="type" value="1">
+                                <label class="form-check-label" for="type">강신구</label>
+                            </div>
+
                             <input type="submit" class="btn btn-primary" value="업로드">
                         </form>
                     </div>

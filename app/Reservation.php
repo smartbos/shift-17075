@@ -35,37 +35,14 @@ class Reservation extends Model
         }
     }
 
-    public function storeUsingFile($file)
+    public function storeUsingFile($file, $type = 'default')
     {
-        // 의미없는 첫 두 줄을 제거하고 파일을 다시 만듦
-        $sheet = IOFactory::load($file);
-        $activeSheet = $sheet->getActiveSheet();
-        $activeSheet->removeRow(1, 2);
-        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($sheet, "Xlsx");
-        $writer->save(storage_path("temp.xlsx"));
-
-        $rows = (new FastExcel())->import(storage_path('temp.xlsx'));
-
-        // insert
-        foreach ($rows as $row) {
-            if($row['상태']) {
-                $insertData = $this->transform($row);
-                if ($row['상태'] == '확정' && $row['결제상태'] == '결제완료') {
-                    try {
-                        $this->create($insertData);
-                    } catch (\PDOException $e) {
-
-                    }
-                }
-
-                if ($row['상태'] == '취소') {
-                    $reservation = $this->where($insertData)->first();
-                    if ($reservation) {
-                        $reservation->delete();
-                    }
-                }
-            }
+        if($type == 'default') {
+            $this->storeUsingNaverFile($file);
+        } else {
+            $this->storeUsingDriveFile($file);
         }
+
     }
 
     private function transform($row)
@@ -169,5 +146,69 @@ class Reservation extends Model
             echo $e->getMessage();
         }
 
+    }
+
+    /**
+     * @param $file
+     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \Box\Spout\Reader\Exception\ReaderNotOpenedException
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    private function storeUsingNaverFile($file): void
+    {
+// 의미없는 첫 두 줄을 제거하고 파일을 다시 만듦
+        $sheet = IOFactory::load($file);
+        $activeSheet = $sheet->getActiveSheet();
+        $activeSheet->removeRow(1, 2);
+        $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($sheet, "Xlsx");
+        $writer->save(storage_path("temp.xlsx"));
+
+        $rows = (new FastExcel())->import(storage_path('temp.xlsx'));
+
+        // insert
+        foreach ($rows as $row) {
+            if ($row['상태']) {
+                $insertData = $this->transform($row);
+                if ($row['상태'] == '확정' && $row['결제상태'] == '결제완료') {
+                    try {
+                        $this->create($insertData);
+                    } catch (\PDOException $e) {
+
+                    }
+                }
+
+                if ($row['상태'] == '취소') {
+                    $reservation = $this->where($insertData)->first();
+                    if ($reservation) {
+                        $reservation->delete();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param $file
+     * @throws \Box\Spout\Common\Exception\IOException
+     * @throws \Box\Spout\Common\Exception\UnsupportedTypeException
+     * @throws \Box\Spout\Reader\Exception\ReaderNotOpenedException
+     */
+    private function storeUsingDriveFile($file): void
+    {
+        $rows = (new FastExcel())->import($file);
+
+        // insert
+        foreach ($rows as $row) {
+            $this->create([
+                'name' => '강신구',
+                'phone' => '1024',
+                'room' => "세미나실 {$row['방']}인실",
+                'from' => Carbon::createFromFormat('YmdHi', $row['날짜'].$row['시작시각']->format('Hi')),
+                'to' => Carbon::createFromFormat('YmdHi', $row['날짜'].$row['종료시각']->format('Hi'))
+            ]);
+        }
     }
 }
