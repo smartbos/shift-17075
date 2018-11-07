@@ -5,6 +5,7 @@ namespace App;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -202,13 +203,17 @@ class Reservation extends Model
 
         // insert
         foreach ($rows as $row) {
-            $this->create([
-                'name' => '강신구',
-                'phone' => '1024',
-                'room' => "세미나실 {$row['방']}인실",
-                'from' => Carbon::createFromFormat('YmdHi', $row['날짜'].$row['시작시각']->format('Hi')),
-                'to' => Carbon::createFromFormat('YmdHi', $row['날짜'].$row['종료시각']->format('Hi'))
-            ]);
+            try {
+                $this->create([
+                    'name' => '강신구',
+                    'phone' => '1024',
+                    'room' => "세미나실 {$row['방']}인실",
+                    'from' => Carbon::createFromFormat('YmdHi', $row['날짜'].$row['시작시각']->format('Hi')),
+                    'to' => Carbon::createFromFormat('YmdHi', $row['날짜'].$row['종료시각']->format('Hi'))
+                ]);
+            } catch (\Exception $e) {
+                Log::info($e->getMessage());
+            }
         }
     }
 }
