@@ -203,13 +203,23 @@ class Reservation extends Model
 
         // insert
         foreach ($rows as $row) {
+            $fromTime = $row['시작시각'];
+            if ($fromTime instanceof \DateTime) {
+                $fromTime = $fromTime->format('Hi');
+            }
+
+            $toTime = $row['종료시각'];
+            if($toTime instanceof \DateTime) {
+                $toTime = $toTime->format('Hi');
+            }
+
             try {
                 $this->create([
                     'name' => '강신구',
                     'phone' => '1024',
                     'room' => "세미나실 {$row['방']}인실",
-                    'from' => Carbon::createFromFormat('YmdHi', $row['날짜'].$row['시작시각']->format('Hi')),
-                    'to' => Carbon::createFromFormat('YmdHi', $row['날짜'].$row['종료시각']->format('Hi'))
+                    'from' => Carbon::createFromFormat('YmdHi', $row['날짜'].$fromTime),
+                    'to' => Carbon::createFromFormat('YmdHi', $row['날짜'].$toTime)
                 ]);
             } catch (\Exception $e) {
                 Log::info($e->getMessage());
