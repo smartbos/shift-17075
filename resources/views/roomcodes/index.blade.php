@@ -55,7 +55,7 @@
                             </div>
 
                             <div class="form-group">
-                                <input type="text" class="form-control" name="date" placeholder="date">
+                                <input type="text" class="form-control" name="date" placeholder="date" value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
                             </div>
 
                             <input type="submit" class="btn btn-primary">

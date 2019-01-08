@@ -33,4 +33,19 @@ class Roomcode extends Model
     {
         return $query->where('date', Carbon::today()->format('Y-m-d'));
     }
+
+    /**
+     * 모든 룸의 코드를 3인실 코드로 입력한다.
+     * @param $inputs
+     */
+    public function createForAllRoomTypes($inputs)
+    {
+        $this->create($inputs);
+
+        $inputs['room_type'] = 6;
+        $this->create($inputs);
+
+        $inputs['room_type'] = 8;
+        $this->create($inputs);
+    }
 }

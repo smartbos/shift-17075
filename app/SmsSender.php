@@ -25,6 +25,13 @@ class SmsSender
 
             $now = Carbon::now();
 
+            /* TODO
+             * 기본적으로 3인실 코드를 보낸다.
+             * 같은 날 다른 방 예약이 있으면 해당실 코드를 보낸다.
+             * 해당실 코드가 없으면 그냥 3인실 코드를 보낸다.
+             *
+             * 같은 날 다른 방 예약이 있는지 관리자에게 문자로 알려주는 기능을 작성한다.
+             */
             $roomcode = Roomcode::where('date', $now->format('Ymd'))
                 ->where('room_type', mb_substr($reservation->room, 5, 1))
                 ->first();

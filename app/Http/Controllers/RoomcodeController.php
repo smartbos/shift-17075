@@ -41,7 +41,12 @@ class RoomcodeController extends Controller
         if($request->hasFile('file')) {
             $roomcode->storeUsingFile($request->file('file'));
         } else {
-            $roomcode->create($request->all());
+            if($request->input('room_type') === '3') {
+                $roomcode->createForAllRoomTypes($request->all());
+            } else {
+                $roomcode->create($request->all());
+            }
+
         }
 
         return back();
