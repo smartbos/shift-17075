@@ -12,9 +12,9 @@ use Rap2hpoutre\FastExcel\FastExcel;
 
 class Reservation extends Model
 {
-    protected $fillable = ['name', 'phone','room', 'from', 'to'];
+    protected $fillable = ['name', 'phone', 'room', 'from', 'to'];
 
-    protected $dates = ['from', 'to','created_at', 'updated_at'];
+    protected $dates = ['from', 'to', 'created_at', 'updated_at'];
 
     public function scopeToday($query)
     {
@@ -25,20 +25,22 @@ class Reservation extends Model
     {
         $now = Carbon::now();
 
-        if($now->minute % 30 == 0) {
+        if ($now->minute % 30 == 0) {
             $from = Carbon::now()->addHour(1)->format('Y-m-d H:i:00');
             return $this->where('from', '=', $from)
                 ->where('name', '강신구')
                 ->get();
         } else {
             $from = Carbon::now()->addMinutes(10)->format('Y-m-d H:i:00');
-            return $this->where('from', '=', $from)->get();
+            return $this->where('from', '=', $from)
+                ->where('name', '!=', '강신구')
+                ->get();
         }
     }
 
     public function storeUsingFile($file, $type = 'default')
     {
-        if($type == 'default') {
+        if ($type == 'default') {
             $this->storeUsingNaverFile($file);
         } else {
             $this->storeUsingDriveFile($file);
@@ -51,7 +53,7 @@ class Reservation extends Model
         $result['room'] = $row['상품'];
         $result['name'] = $row['예약자'];
 
-        $result['phone'] = mb_substr($row['전화번호'], - 4, 4);
+        $result['phone'] = mb_substr($row['전화번호'], -4, 4);
         $date = $fromDate = $toDate = mb_substr($row['이용일시'], 0, strpos($row['이용일시'], '('));
         $time = mb_substr($row['이용일시'], strpos($row['이용일시'], ')'));
 
@@ -60,19 +62,19 @@ class Reservation extends Model
         $fromArray = explode(':', $timeArray2[0]);
         $toArray = explode(':', $timeArray2[1]);
         if ($timeArray[0] == '오후') { // 오후 12:00~2:00 | 11:00~12:00 |
-            if($fromArray[0] != 12) {
+            if ($fromArray[0] != 12) {
                 $fromArray[0] = $fromArray[0] + 12; // 24 | 23
             }
 
             $toArray[0] = $toArray[0] + 12; // 14 | 24
 
-            if($toArray[0] == 24) {
+            if ($toArray[0] == 24) {
                 $toArray[0] = 0;
                 $toDateCarbon = Carbon::createFromFormat('y. m. d.', $toDate);
                 $toDate = $toDateCarbon->addDay(1)->format('y. m. d.');
             }
         } else {
-            if($fromArray[0] == 12) {
+            if ($fromArray[0] == 12) {
                 $fromArray[0] = 0;
             }
 
@@ -123,18 +125,18 @@ class Reservation extends Model
 
         $fromArray = explode(' ', mb_substr($fromInfo, mb_strpos($fromInfo, '오')));
         $fromTimeArray = explode(':', $fromArray[1]);
-        if($fromArray[0] == '오후' && $fromTimeArray[0] != '12') {
-            $data['from'] = Carbon::createFromFormat('Y.m.d G:i',$date . ' ' . ($fromTimeArray[0] + 12) . ':' . $fromTimeArray[1]);
+        if ($fromArray[0] == '오후' && $fromTimeArray[0] != '12') {
+            $data['from'] = Carbon::createFromFormat('Y.m.d G:i', $date . ' ' . ($fromTimeArray[0] + 12) . ':' . $fromTimeArray[1]);
         } else {
             $data['from'] = Carbon::createFromFormat('Y.m.d G:i', $date . ' ' . $fromTimeArray[0] . ':' . $fromTimeArray[1]);
         }
 
         $toArray = explode(' ', $toInfo);
         $toTimeArray = explode(':', $toArray[1]);
-        if($toArray[0] == '오후') {
+        if ($toArray[0] == '오후') {
             $data['to'] = Carbon::createFromFormat('Y.m.d H:i', $date . ' ' . ($toTimeArray[0] + 12) . ':' . filter_var($toTimeArray[1], FILTER_SANITIZE_NUMBER_INT));
         } else {
-            if($toTimeArray[0] == 0) {
+            if ($toTimeArray[0] == 0) {
                 $toDateCarbon = Carbon::createFromFormat('Y.m.d', $date);
                 $toDate = $toDateCarbon->addDay(1)->format('Y.m.d');
             }
@@ -209,7 +211,7 @@ class Reservation extends Model
             }
 
             $toTime = $row['종료시각'];
-            if($toTime instanceof \DateTime) {
+            if ($toTime instanceof \DateTime) {
                 $toTime = $toTime->format('Hi');
             }
 
@@ -218,8 +220,8 @@ class Reservation extends Model
                     'name' => '강신구',
                     'phone' => '1024',
                     'room' => "세미나실 {$row['방']}인실",
-                    'from' => Carbon::createFromFormat('YmdHi', $row['날짜'].$fromTime),
-                    'to' => Carbon::createFromFormat('YmdHi', $row['날짜'].$toTime)
+                    'from' => Carbon::createFromFormat('YmdHi', $row['날짜'] . $fromTime),
+                    'to' => Carbon::createFromFormat('YmdHi', $row['날짜'] . $toTime)
                 ]);
             } catch (\Exception $e) {
                 Log::info($e->getMessage());
