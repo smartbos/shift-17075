@@ -8,13 +8,20 @@
                 <div class="card-header">오늘 예약자 정보</div>
 
                 <div class="card-body">
-                    @forelse($todayReservations as $reservation)
-                        <div>
-                            <span>{{ $reservation->name }}</span>
-                            <span>{{ $reservation->from->format('H:i') }}</span>
-                            <span>{{ $reservation->to->format('H:i') }}</span>
-                            <span>{{ $reservation->room }}</span>
-                        </div>
+                    @forelse($todayReservationGroups as $todayReservationGroup)
+                        @forelse($todayReservationGroup as $reservation)
+                            @if($loop->first)
+                            <h3>{{ $reservation->branch->name }}</h3>
+                            @endif
+                            <div>
+                                <span>{{ $reservation->name }}</span>
+                                <span>{{ $reservation->from->format('H:i') }}</span>
+                                <span>{{ $reservation->to->format('H:i') }}</span>
+                                <span>{{ $reservation->room }}</span>
+                            </div>
+                        @empty
+                            <p>예약이 없습니다.</p>
+                        @endforelse
                     @empty
                         <p>예약이 없습니다.</p>
                     @endforelse
@@ -53,6 +60,13 @@
 
                     <form action="/reservations" method="POST" enctype="multipart/form-data">
                         {{ csrf_field() }}
+
+                        <select name="branch_id" class="form-control mb-3" required>
+                            <option value="">지점 선택</option>
+                            <option value="1">연신내점</option>
+                            <option value="2">구산역점</option>
+                        </select>
+
                         <div class="form-group">
                             <input type="file" class="form-control-file" name="xls">
                         </div>

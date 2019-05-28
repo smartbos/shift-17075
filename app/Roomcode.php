@@ -8,7 +8,12 @@ use Rap2hpoutre\FastExcel\FastExcel;
 
 class Roomcode extends Model
 {
-    protected $fillable = ['date', 'code', 'room_type'];
+    protected $fillable = ['date', 'code', 'room_type', 'branch_id'];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 
     public function storeUsingFile($file)
     {
@@ -38,14 +43,23 @@ class Roomcode extends Model
      * 모든 룸의 코드를 3인실 코드로 입력한다.
      * @param $inputs
      */
-    public function createForAllRoomTypes($inputs)
+    public function createForAllRoomTypes($inputs, $branchId)
     {
+        $inputs['branch_id'] = $branchId;
+
         $this->create($inputs);
 
-        $inputs['room_type'] = 6;
-        $this->create($inputs);
+        if($inputs['room_type'] == '세미나실 3인실') {
+            $inputs['room_type'] = '세미나실 6인실';
+            $this->create($inputs);
 
-        $inputs['room_type'] = 8;
-        $this->create($inputs);
+            $inputs['room_type'] = '세미나실 8인실';
+            $this->create($inputs);
+        }
+
+        if($inputs['room_type'] == '세미나실 A') {
+            $inputs['room_type'] = '세미나실 B';
+            $this->create($inputs);
+        }
     }
 }

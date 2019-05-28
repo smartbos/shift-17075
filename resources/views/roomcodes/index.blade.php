@@ -11,12 +11,14 @@
                             <tr>
                                 <th>일시</th>
                                 <th>코드</th>
+                                <th>지점</th>
                                 <th>룸</th>
                             </tr>
                             @forelse($roomcodes as $code)
                                 <tr>
                                     <td>{{ $code->date }}</td>
                                     <td>{{ $code->code }}</td>
+{{--                                    <td>{{ $code->branch->name }}</td>--}}
                                     <td>{{ $code->room_type }}</td>
                                 </tr>
                             @empty
@@ -44,9 +46,11 @@
 
                             <div class="form-group">
                                 <select name="room_type" class="form-control">
-                                    <option value="3">3인실</option>
-                                    <option value="6">6인실</option>
-                                    <option value="8">8인실</option>
+                                    <option value="세미나실 3인실">3인실</option>
+                                    <option value="세미나실 6인실">6인실</option>
+                                    <option value="세미나실 8인실">8인실</option>
+                                    <option value="세미나실 A">구산역점 A</option>
+                                    <option value="세미나실 B">구산역점 B</option>
                                 </select>
                             </div>
 

@@ -51,7 +51,11 @@ class ReservationController extends Controller
     public function store(Request $request, Reservation $reservation)
     {
         if($request->hasFile('xls')) {
-            $reservation->storeUsingFile($request->file('xls'), $request->input('type', 'default'));
+            $reservation->storeUsingFile(
+                $request->file('xls'),
+                $request->input('branch_id'),
+                $request->input('type', 'default')
+            );
         } else {
             $reservation->storeUsingSms($request->input('sms'));
         }

@@ -9,6 +9,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SmsTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * A basic test example.
      *

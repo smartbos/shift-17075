@@ -30,10 +30,17 @@ Route::middleware(['auth', 'admin'])->group(function(){
     Route::get('/home', 'HomeController@index')->name('home');
 
     Route::resource('/reservations', 'ReservationController');
+//    Route::resource('/reservations/ksk', 'KskReservationController'); // 강신구 전용
     Route::resource('/customers', 'CustomerController');
     Route::resource('/roomcodes', 'RoomcodeController');
     Route::resource('/lockers', 'LockerController');
+    Route::resource('/branches', 'BranchController');
 });
+
+Route::middleware(['auth'])->group(function(){
+    Route::resource('/ksk', 'KskReservationController');
+});
+
 
 Route::get('/oauth/gmail', function (){
     return LaravelGmail::redirect();

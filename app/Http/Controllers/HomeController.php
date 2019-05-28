@@ -34,12 +34,15 @@ class HomeController extends Controller
 
         $expiredLockers = $locker->expired()->orderBy('num')->get();
 
-        $todayReservations = $reservation->today()->orderBy('from')->get();
+        $todayReservations = $reservation->with('branch')->today()->orderBy('from')->get();
+        $todayReservationGroups = $todayReservations->groupBy(function ($item, $key) {
+            return $item->branch->name;
+        });
 
         return view('home', [
             'roomcodes' => $todayCodes,
             'expiredLockers' => $expiredLockers,
-            'todayReservations' => $todayReservations
+            'todayReservationGroups' => $todayReservationGroups
         ]);
     }
 }

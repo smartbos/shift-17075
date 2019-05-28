@@ -3,18 +3,26 @@
 namespace App;
 
 use Carbon\Carbon;
+use http\Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 class Reservation extends Model
 {
-    protected $fillable = ['name', 'phone', 'room', 'from', 'to'];
+    protected $fillable = ['name', 'phone', 'room', 'from', 'to', 'branch_id'];
 
     protected $dates = ['from', 'to', 'created_at', 'updated_at'];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 
     public function scopeToday($query)
     {
@@ -38,10 +46,10 @@ class Reservation extends Model
         }
     }
 
-    public function storeUsingFile($file, $type = 'default')
+    public function storeUsingFile($file, $branch_id, $type = 'default')
     {
         if ($type == 'default') {
-            $this->storeUsingNaverFile($file);
+            $this->storeUsingNaverFile($file, $branch_id);
         } else {
             $this->storeUsingDriveFile($file);
         }
@@ -51,6 +59,13 @@ class Reservation extends Model
     private function transform($row)
     {
         $result['room'] = $row['상품'];
+
+        if($row['상품'] == "세미나실 A" || $row['상품'] == "세미나실 B") {
+            $result['branch_id'] = 2;
+        } else {
+            $result['branch_id'] = 1;
+        }
+
         $result['name'] = $row['예약자'];
 
         $result['phone'] = mb_substr($row['전화번호'], -4, 4);
@@ -160,9 +175,9 @@ class Reservation extends Model
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    private function storeUsingNaverFile($file): void
+    private function storeUsingNaverFile($file, $branch_id): void
     {
-// 의미없는 첫 두 줄을 제거하고 파일을 다시 만듦
+        // 의미없는 첫 두 줄을 제거하고 파일을 다시 만듦
         $sheet = IOFactory::load($file);
         $activeSheet = $sheet->getActiveSheet();
         $activeSheet->removeRow(1, 2);
@@ -175,6 +190,7 @@ class Reservation extends Model
         foreach ($rows as $row) {
             if ($row['상태']) {
                 $insertData = $this->transform($row);
+                $insertData['branch_id'] = $branch_id;
                 if ($row['상태'] == '확정' && $row['결제상태'] == '결제완료') {
                     try {
                         $this->create($insertData);
@@ -227,5 +243,20 @@ class Reservation extends Model
                 Log::info($e->getMessage());
             }
         }
+    }
+
+    /**
+     * 강신구 예약 내역만 조회
+     * @param $query
+     * @return mixed
+     */
+    public function scopeKsk($query)
+    {
+        return $query->where('name', '강신구');
+    }
+
+    public function scopeFromToday($query)
+    {
+        return $query->where('from', '>=', Carbon::today());
     }
 }

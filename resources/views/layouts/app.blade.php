@@ -49,6 +49,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/lockers">Lockers</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/branches">Branches</a>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -89,5 +92,7 @@
             @yield('content')
         </main>
     </div>
+
+    @yield('page-script')
 </body>
 </html>

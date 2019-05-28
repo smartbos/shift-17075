@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddLockerIdToLockerLogTable extends Migration
+class CreateBranchesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddLockerIdToLockerLogTable extends Migration
      */
     public function up()
     {
-        Schema::table('locker_logs', function (Blueprint $table) {
-            $table->addColumn('integer', 'locker_id')->default('');
+        Schema::create('branches', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('instruction_link');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class AddLockerIdToLockerLogTable extends Migration
      */
     public function down()
     {
-        Schema::table('locker_log', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('branches');
     }
 }

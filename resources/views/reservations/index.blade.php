@@ -37,6 +37,13 @@
 
                         <form action="/reservations" method="POST" enctype="multipart/form-data">
                             {{ csrf_field() }}
+
+                            <select name="branch_id" class="form-control mb-3" required>
+                                <option value="">지점 선택</option>
+                                <option value="1">연신내점</option>
+                                <option value="2">구산역점</option>
+                            </select>
+
                             <div class="form-group">
                                 <input type="file" class="form-control-file" name="xls">
                             </div>
@@ -49,6 +56,20 @@
                             <input type="submit" class="btn btn-primary" value="업로드">
                         </form>
                     </div>
+                </div>
+
+                <div class="card mt-3">
+                    <form action="/reservations" method="post">
+                        @csrf
+
+                        <input type="text" name="name">
+
+                        <input type="text" name="phone">
+
+                        <select>
+                            <option value="세미나실 3인실">세미나실 3인실</option>
+                        </select>
+                    </form>
                 </div>
             </div>
             <div class="col-md-8">

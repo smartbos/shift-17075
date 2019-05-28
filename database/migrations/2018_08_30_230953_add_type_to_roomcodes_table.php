@@ -14,7 +14,7 @@ class AddTypeToRoomcodesTable extends Migration
     public function up()
     {
         Schema::table('roomcodes', function (Blueprint $table) {
-            $table->tinyInteger('room_type');
+            $table->tinyInteger('room_type')->default('');
 
             $table->index('room_type');
         });

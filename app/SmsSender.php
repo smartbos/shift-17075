@@ -33,13 +33,16 @@ class SmsSender
              * 같은 날 다른 방 예약이 있는지 관리자에게 문자로 알려주는 기능을 작성한다.
              */
             $roomcode = Roomcode::where('date', $now->format('Ymd'))
-                ->where('room_type', mb_substr($reservation->room, 5, 1))
+                ->where('room_type', $reservation->room)
+                ->where('branch_id', $reservation->branch_id)
                 ->first();
 
-            $content = "[일공공] {$now->format('m월 d일')}
+            $branch = Branch::find($reservation->branch_id);
+
+            $content = "[{$branch->name}] {$now->format('m월 d일')}
 {$reservation->from->format('H:i')}~{$reservation->to->format('H:i')} 
 출입코드 {$roomcode->code}
-입장 및 이용방법https://goo.gl/aCyaTD";
+입장 및 이용방법 {$branch->instruction_link}";
 
             if ($customer) {
                 $res = $client->request('POST', 'http://biz.moashot.com/EXT/URLASP/mssendUTF.asp', [
