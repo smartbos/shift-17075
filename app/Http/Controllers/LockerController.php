@@ -4,19 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Locker;
 use App\LockerLog;
+use App\Services\LockerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LockerController extends Controller
 {
     /**
-     * @var LockerLog
+     * @var LockerService
      */
-    private $lockerLog;
+    private $lockerService;
 
-    public function __construct(LockerLog $lockerLog)
+    public function __construct(LockerService $lockerService)
     {
-        $this->lockerLog = $lockerLog;
+        $this->lockerService = $lockerService;
     }
 
     /**
@@ -86,20 +87,7 @@ class LockerController extends Controller
      */
     public function update(Request $request, Locker $locker)
     {
-        DB::transaction(function () use ($request, $locker) {
-            $this->backup($locker);
-
-            $inputs = $request->only('username', 'from' , 'password');
-
-            if(!$inputs['username']) {
-                $inputs['from'] = null;
-                $inputs['to'] = null;
-            } else {
-                $inputs['to'] = $locker->calcLastday($request->from);
-            }
-
-            $locker->update($inputs);
-        });
+        $this->lockerService->update($request, $locker);
 
         return back();
     }
@@ -113,7 +101,7 @@ class LockerController extends Controller
     public function destroy(Locker $locker)
     {
         DB::transaction(function() use ($locker){
-            $this->backup($locker);
+            $this->lockerService->backup($locker);
 
             $locker->username = null;
             $locker->from = null;
@@ -122,18 +110,5 @@ class LockerController extends Controller
         });
 
         return back();
-    }
-
-    private function backup(Locker $locker)
-    {
-        if($locker->username) {
-            $before = $locker->toArray();
-            $before['locker_id'] = $before['id'];
-            unset($before['id']);
-            unset($before['created_at']);
-            unset($before['updated_at']);
-
-            $this->lockerLog->create($before);
-        }
     }
 }

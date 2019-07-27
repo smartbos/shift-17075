@@ -4,9 +4,12 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Locker extends Model
 {
+    use RevisionableTrait;
+
     protected $fillable = ['num', 'username', 'from', 'to', 'password'];
 
     public function calcLastday($from)

@@ -151,6 +151,7 @@ return [
          * Package Service Providers...
          */
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+        Venturecraft\Revisionable\RevisionableServiceProvider::class,
 
         /*
          * Application Service Providers...

@@ -55,3 +55,5 @@ Route::get('/oauth/gmail/logout', function (){
     LaravelGmail::logout(); //It returns exception if fails
     return redirect()->to('/');
 });
+
+Route::post('/webhook', 'TwilioController@store');

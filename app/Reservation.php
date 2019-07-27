@@ -110,60 +110,87 @@ class Reservation extends Model
 
     public function storeUsingSms($sms)
     {
-        $sms = explode('-', $sms);
+        // 결제완료? 예약취소?
+        $sms = explode("\n", $sms);
 
-        $data = [
-            'name' => '',
-            'phone' => '',
-            'room' => '',
-            'from' => '',
-            'to' => ''
-        ];
+        if(str_contains($sms[1], '예약취소')) {
+            $name = trim($sms[2]);
+            $startFrom = Carbon::now()->format('Y.').trim($sms[3]);
+            $startFrom = Carbon::createFromFormat('Y.m.d. H:i', $startFrom);
 
-        $nameInfo = $sms[2];
-        $nameArray = explode(':', $nameInfo);
+            $this->where('name', $name)
+                ->where('from', $startFrom)
+                ->delete();
+        } elseif (str_contains($sms[9], '결제완료')) {
+            $data = [
+                'name' => '',
+                'phone' => '',
+                'room' => '',
+                'from' => '',
+                'to' => '',
+                'branch_id' => '',
+            ];
 
-        $data['name'] = trim($nameArray[1]);
-        $data['phone'] = filter_var($sms['5'], FILTER_SANITIZE_NUMBER_INT);
+            $nameInfo = $sms[5];
+            $nameArray = explode(':', $nameInfo);
 
-        $roomInfo = $sms[6];
-        $roomArray = explode(':', $roomInfo);
+            $data['name'] = trim($nameArray[1]);
+            $phone = str_replace('-', '', filter_var($sms[6], FILTER_SANITIZE_NUMBER_INT));
+            $phoneLast = mb_substr($phone, -4);
 
-        $data['room'] = trim($roomArray[1]);
+            if(Customer::where('phone', $phone)->doesntExist()) {
+                Customer::create([
+                    'name' => trim($nameArray[1]),
+                    'phone' => $phone,
+                    'phone_last' => $phoneLast
+                ]);
+            };
 
-        $time = mb_substr($sms[7], 7);
-        $toDate = $date = mb_substr($time, 0, 10);
+            $data['phone'] = $phoneLast;
+            $roomInfo = $sms[7];
+            $roomArray = explode(':', $roomInfo);
 
-        $timeArray = explode('~', $time);
-        $fromInfo = $timeArray[0];
-        $toInfo = $timeArray[1];
+            $data['room'] = trim($roomArray[1]);
 
-        $fromArray = explode(' ', mb_substr($fromInfo, mb_strpos($fromInfo, '오')));
-        $fromTimeArray = explode(':', $fromArray[1]);
-        if ($fromArray[0] == '오후' && $fromTimeArray[0] != '12') {
-            $data['from'] = Carbon::createFromFormat('Y.m.d G:i', $date . ' ' . ($fromTimeArray[0] + 12) . ':' . $fromTimeArray[1]);
-        } else {
-            $data['from'] = Carbon::createFromFormat('Y.m.d G:i', $date . ' ' . $fromTimeArray[0] . ':' . $fromTimeArray[1]);
-        }
+            $time = mb_substr($sms[8], 8);
 
-        $toArray = explode(' ', $toInfo);
-        $toTimeArray = explode(':', $toArray[1]);
-        if ($toArray[0] == '오후') {
-            $data['to'] = Carbon::createFromFormat('Y.m.d H:i', $date . ' ' . ($toTimeArray[0] + 12) . ':' . filter_var($toTimeArray[1], FILTER_SANITIZE_NUMBER_INT));
-        } else {
-            if ($toTimeArray[0] == 0) {
-                $toDateCarbon = Carbon::createFromFormat('Y.m.d', $date);
-                $toDate = $toDateCarbon->addDay(1)->format('Y.m.d');
+            $toDate = $date = mb_substr($time, 0, 10);
+
+            $timeArray = explode('~', $time);
+
+            $fromInfo = $timeArray[0];
+            $toInfo = $timeArray[1];
+
+            $fromArray = explode(' ', mb_substr($fromInfo, mb_strpos($fromInfo, '오')));
+            $fromTimeArray = explode(':', $fromArray[1]);
+
+            if ($fromArray[0] == '오후' && $fromTimeArray[0] != '12') {
+                $data['from'] = Carbon::createFromFormat('Y.m.d G:i', $date . ' ' . ($fromTimeArray[0] + 12) . ':' . $fromTimeArray[1]);
+            } else {
+                $data['from'] = Carbon::createFromFormat('Y.m.d G:i', $date . ' ' . $fromTimeArray[0] . ':' . $fromTimeArray[1]);
             }
-            $data['to'] = Carbon::createFromFormat('Y.m.d G:i', $toDate . ' ' . $toTimeArray[0] . ':' . filter_var($toTimeArray[1], FILTER_SANITIZE_NUMBER_INT));
-        }
 
-        try {
+            $toArray = explode(' ', $toInfo);
+            $toTimeArray = explode(':', $toArray[1]);
+            if ($toArray[0] == '오후') {
+                $data['to'] = Carbon::createFromFormat('Y.m.d H:i', $date . ' ' . ($toTimeArray[0] + 12) . ':' . filter_var($toTimeArray[1], FILTER_SANITIZE_NUMBER_INT));
+            } else {
+                if ($toTimeArray[0] == 0) {
+                    $toDateCarbon = Carbon::createFromFormat('Y.m.d', $date);
+                    $toDate = $toDateCarbon->addDay(1)->format('Y.m.d');
+                }
+                $data['to'] = Carbon::createFromFormat('Y.m.d G:i', $toDate . ' ' . $toTimeArray[0] . ':' . filter_var($toTimeArray[1], FILTER_SANITIZE_NUMBER_INT));
+            }
+
+            $branchArray = explode(',', $sms[2]);
+            if($branchArray[0] == '일공공') {
+                $data['branch_id'] = 1;
+            } else {
+                $data['branch_id'] = 2;
+            }
+
             $this->create($data);
-        } catch (\Exception $e) {
-            echo $e->getMessage();
         }
-
     }
 
     /**
