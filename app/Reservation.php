@@ -243,7 +243,7 @@ class Reservation extends Model
     {
         $lastNaverReservationFileUploadedAt = json_decode(Redis::get('lastNaverReservationFileUploadedAt'));
 
-        $lastNaverReservationFileUploadedAt[$branch_id] = Carbon::now()->format('Y-m-d H:i');
+        $lastNaverReservationFileUploadedAt->$branch_id = Carbon::now()->format('Y-m-d H:i');
 
         Redis::set('lastNaverReservationFileUploadedAt', json_encode($lastNaverReservationFileUploadedAt));
     }
