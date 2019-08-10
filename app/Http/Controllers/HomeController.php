@@ -8,6 +8,7 @@ use App\Reservation;
 use App\Roomcode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class HomeController extends Controller
 {
@@ -39,10 +40,13 @@ class HomeController extends Controller
             return $item->branch->name;
         });
 
+        $lastNaverReservationFileUploadedAt = $reservation->getLastNaverReservationFileUploadedAt();
+
         return view('home', [
             'roomcodes' => $todayCodes,
             'expiredLockers' => $expiredLockers,
-            'todayReservationGroups' => $todayReservationGroups
+            'todayReservationGroups' => $todayReservationGroups,
+            'lastNaverReservationFileUploadedAt' => $lastNaverReservationFileUploadedAt,
         ]);
     }
 }

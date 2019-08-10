@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -60,7 +61,7 @@ class Reservation extends Model
     {
         $result['room'] = $row['상품'];
 
-        if($row['상품'] == "세미나실 A" || $row['상품'] == "세미나실 B") {
+        if ($row['상품'] == "세미나실 A" || $row['상품'] == "세미나실 B") {
             $result['branch_id'] = 2;
         } else {
             $result['branch_id'] = 1;
@@ -113,9 +114,9 @@ class Reservation extends Model
         // 결제완료? 예약취소?
         $sms = explode("\n", $sms);
 
-        if(str_contains($sms[1], '예약취소')) {
+        if (str_contains($sms[1], '예약취소')) {
             $name = trim($sms[2]);
-            $startFrom = Carbon::now()->format('Y.').trim($sms[3]);
+            $startFrom = Carbon::now()->format('Y.') . trim($sms[3]);
             $startFrom = Carbon::createFromFormat('Y.m.d. H:i', $startFrom);
 
             $this->where('name', $name)
@@ -138,7 +139,7 @@ class Reservation extends Model
             $phone = str_replace('-', '', filter_var($sms[6], FILTER_SANITIZE_NUMBER_INT));
             $phoneLast = mb_substr($phone, -4);
 
-            if(Customer::where('phone', $phone)->doesntExist()) {
+            if (Customer::where('phone', $phone)->doesntExist()) {
                 Customer::create([
                     'name' => trim($nameArray[1]),
                     'phone' => $phone,
@@ -183,7 +184,7 @@ class Reservation extends Model
             }
 
             $branchArray = explode(',', $sms[2]);
-            if($branchArray[0] == '일공공') {
+            if ($branchArray[0] == '일공공') {
                 $data['branch_id'] = 1;
             } else {
                 $data['branch_id'] = 2;
@@ -234,6 +235,17 @@ class Reservation extends Model
                 }
             }
         }
+
+        $this->updateLastNaverReservationFileUploadedAtRedis($branch_id);
+    }
+
+    private function updateLastNaverReservationFileUploadedAtRedis($branch_id)
+    {
+        $lastNaverReservationFileUploadedAt = json_decode(Redis::get('lastNaverReservationFileUploadedAt'));
+
+        $lastNaverReservationFileUploadedAt[$branch_id] = Carbon::now()->format('Y-m-d H:i');
+
+        Redis::set('lastNaverReservationFileUploadedAt', json_encode($lastNaverReservationFileUploadedAt));
     }
 
     /**
@@ -285,5 +297,24 @@ class Reservation extends Model
     public function scopeFromToday($query)
     {
         return $query->where('from', '>=', Carbon::today());
+    }
+
+    public function getLastNaverReservationFileUploadedAt()
+    {
+        $result = [];
+
+        $lastNaverReservationFileUploadedAt = json_decode(Redis::get('lastNaverReservationFileUploadedAt'));
+
+        if ($lastNaverReservationFileUploadedAt) {
+            foreach ($lastNaverReservationFileUploadedAt as $key => $value) {
+                $result[] = [
+                    'branch' => Branch::find($key),
+                    'uploadedAt' => $value,
+                    'today' => Carbon::createFromFormat('Y-m-d H:i', $value)->greaterThan(Carbon::today())
+                ];
+            }
+        }
+
+        return $result;
     }
 }

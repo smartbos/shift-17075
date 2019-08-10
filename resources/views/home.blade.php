@@ -5,6 +5,16 @@
     <div class="row justify-content-center">
         <div class="col-md-4">
             <div class="card">
+                <div class="card-header">네이버 예약 파일 최종 업로드 시간</div>
+                <div class="card-body">
+                    @forelse($lastNaverReservationFileUploadedAt as $at)
+                        <p @if( ! $at['today']) class="alert-danger" @endif>{{$at['branch']->name}} {{$at['uploadedAt']}}</p>
+                    @empty
+                        <p>No data yet.</p>
+                    @endforelse
+                </div>
+            </div>
+            <div class="card mt-3">
                 <div class="card-header">오늘 예약자 정보</div>
 
                 <div class="card-body">
