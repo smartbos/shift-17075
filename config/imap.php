@@ -102,7 +102,7 @@ return [
     */
     'options' => [
         'delimiter' => '/',
-        'fetch' => FT_UID,
+        'fetch' => env('IMAP_FT_UID', 1),
         'fetch_body' => true,
         'fetch_attachment' => true,
         'fetch_flags' => true,
