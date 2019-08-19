@@ -18,7 +18,7 @@
         "laravel/tinker": "^1.0",
         "phpoffice/phpspreadsheet": "^1.4",
         "predis/predis": "^1.1",
-        "rap2hpoutre/fast-excel": "^0.6.0",
+        "rap2hpoutre/fast-excel": "^1.2",
         "venturecraft/revisionable": "^1.30",
         "webklex/laravel-imap": "^1.2"
     },
