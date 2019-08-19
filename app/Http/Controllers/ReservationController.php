@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Customer;
-use App\Reservation;
 use Carbon\Carbon;
+use App\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -24,7 +24,7 @@ class ReservationController extends Controller
 
         return view('reservations.index', [
             'reservations' => $reservations,
-            'unregisteredCustomers' => $unregisteredCustomers
+            'unregisteredCustomers' => $unregisteredCustomers,
         ]);
     }
 
@@ -50,7 +50,7 @@ class ReservationController extends Controller
      */
     public function store(Request $request, Reservation $reservation)
     {
-        if($request->hasFile('xls')) {
+        if ($request->hasFile('xls')) {
             $reservation->storeUsingFile(
                 $request->file('xls'),
                 $request->input('branch_id'),
@@ -71,7 +71,6 @@ class ReservationController extends Controller
      */
     public function show(Reservation $reservation)
     {
-
     }
 
     /**

@@ -16,16 +16,13 @@ class KskReservationController extends Controller
 
     public function create()
     {
-
     }
 
     public function store()
     {
-
     }
 
     public function destroy()
     {
-
     }
 }

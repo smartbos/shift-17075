@@ -14,9 +14,9 @@
 use Dacastro4\LaravelGmail\Facade\LaravelGmail;
 
 Route::get('/', function () {
-    if(\Illuminate\Support\Facades\Auth::check()) {
+    if (\Illuminate\Support\Facades\Auth::check()) {
         $user = \Illuminate\Support\Facades\Auth::user();
-        if($user->isAdmin()) {
+        if ($user->isAdmin()) {
             return redirect('/home');
         }
     }
@@ -26,7 +26,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::middleware(['auth', 'admin'])->group(function(){
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/home', 'HomeController@index')->name('home');
 
     Route::resource('/reservations', 'ReservationController');
@@ -37,21 +37,21 @@ Route::middleware(['auth', 'admin'])->group(function(){
     Route::resource('/branches', 'BranchController');
 });
 
-Route::middleware(['auth'])->group(function(){
+Route::middleware(['auth'])->group(function () {
     Route::resource('/ksk', 'KskReservationController');
 });
 
-
-Route::get('/oauth/gmail', function (){
+Route::get('/oauth/gmail', function () {
     return LaravelGmail::redirect();
 });
 
-Route::get('/oauth/gmail/callback', function (){
+Route::get('/oauth/gmail/callback', function () {
     LaravelGmail::makeToken();
+
     return redirect()->to('/');
 });
 
-Route::get('/oauth/gmail/logout', function (){
+Route::get('/oauth/gmail/logout', function () {
     LaravelGmail::logout(); //It returns exception if fails
     return redirect()->to('/');
 });

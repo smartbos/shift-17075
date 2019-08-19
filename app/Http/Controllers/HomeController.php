@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Customer;
 use App\Locker;
-use App\Reservation;
+use App\Customer;
 use App\Roomcode;
 use Carbon\Carbon;
+use App\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 

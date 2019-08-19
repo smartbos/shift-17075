@@ -15,6 +15,7 @@ class Locker extends Model
     public function calcLastday($from)
     {
         $from = str_replace('-', '', $from);
+
         return Carbon::createFromFormat('Ymd', $from)->addWeek(4)->format('Ymd');
     }
 

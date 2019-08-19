@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hyunseoklee
  * Date: 02/07/2019
- * Time: 7:48 PM
+ * Time: 7:48 PM.
  */
 
 namespace App\Services;
-
 
 use App\Locker;
 use App\LockerLog;
@@ -28,7 +27,7 @@ class LockerService
 
     public function backup(Locker $locker)
     {
-        if($locker->username) {
+        if ($locker->username) {
             $before = $locker->toArray();
             $before['locker_id'] = $before['id'];
             unset($before['id']);
@@ -44,16 +43,17 @@ class LockerService
      * @param $locker
      * @return mixed
      */
-    function buildInputsForUpdate($request, $locker)
+    public function buildInputsForUpdate($request, $locker)
     {
         $inputs = $request->only('username', 'from', 'password');
 
-        if (!$inputs['username']) {
+        if (! $inputs['username']) {
             $inputs['from'] = null;
             $inputs['to'] = null;
         } else {
             $inputs['to'] = $locker->calcLastday($request->from);
         }
+
         return $inputs;
     }
 }

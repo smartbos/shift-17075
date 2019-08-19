@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: hyunseoklee
  * Date: 2018. 8. 29.
- * Time: 오전 5:17
+ * Time: 오전 5:17.
  */
 
 namespace App;
-
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -59,10 +58,9 @@ class SmsSender
 //            'nType' => '2',
 //            'indexCode' => '100',
 //            'returnUrl' => 'http://sms.bookcafe100.com/smsCallback'
-                    ]
+                    ],
                 ]);
             }
         }
-
     }
 }

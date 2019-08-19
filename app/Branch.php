@@ -13,7 +13,7 @@ class Branch extends Model
         '세미나실 6인실',
         '세미나실 8인실',
         '세미나실 A',
-        '세미나실 B'
+        '세미나실 B',
     ];
 
     public function getRoomTypes()

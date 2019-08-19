@@ -37,13 +37,13 @@ class CustomerController extends Controller
      */
     public function store(Request $request, Customer $customer)
     {
-        if($request->hasFile('file')) {
+        if ($request->hasFile('file')) {
             $customer->storeUsingFile($request->file('file'));
         } else {
             $inputs = [
                 'name' => $request->input('name'),
                 'phone' => $request->input('phone'),
-                'phone_last' => substr($request->input('phone'), -4)
+                'phone_last' => substr($request->input('phone'), -4),
             ];
             $customer->create($inputs);
         }
