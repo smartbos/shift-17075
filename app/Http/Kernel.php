@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin' => Admin::class,
     ];
+
     /**
      * The priority-sorted list of middleware.
      *
