@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Console\Command;
 use Webklex\IMAP\Facades\Client;
 
 class CheckGmail extends Command

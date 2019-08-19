@@ -3,8 +3,8 @@
 namespace App;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
@@ -17,7 +17,7 @@ class Customer extends Model
         $reservations = Reservation::where('from', '>', Carbon::today())->get();
 
         foreach ($reservations as $reservation) {
-            if ( ! Customer::where('name', $reservation->name)
+            if (! self::where('name', $reservation->name)
                 ->where('phone_last', $reservation->phone)
                 ->exists()) {
                 $unRegisteredCustomers[] = $reservation;
@@ -36,12 +36,11 @@ class Customer extends Model
                 $inputs = [
                     'name' => $row['이름'],
                     'phone' => str_replace('-', '', $row['휴대폰']),
-                    'phone_last' => substr($row['휴대폰'], -4)
+                    'phone_last' => substr($row['휴대폰'], -4),
                 ];
 
                 $this->create($inputs);
             } catch (\Exception $e) {
-
             }
         }
     }

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Locker;
 use App\LockerLog;
-use App\Services\LockerService;
 use Illuminate\Http\Request;
+use App\Services\LockerService;
 use Illuminate\Support\Facades\DB;
 
 class LockerController extends Controller
@@ -53,7 +53,6 @@ class LockerController extends Controller
      */
     public function store(Request $request)
     {
-
     }
 
     /**
@@ -100,7 +99,7 @@ class LockerController extends Controller
      */
     public function destroy(Locker $locker)
     {
-        DB::transaction(function() use ($locker){
+        DB::transaction(function () use ($locker) {
             $this->lockerService->backup($locker);
 
             $locker->username = null;

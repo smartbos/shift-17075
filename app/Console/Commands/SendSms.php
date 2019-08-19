@@ -2,13 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Reservation;
 use App\SmsSender;
 use Carbon\Carbon;
-use Illuminate\Console\Command;
-use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
-use Illuminate\Support\Facades\Log;
+use App\Reservation;
 use RuntimeException;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
 
 class SendSms extends Command
 {

@@ -15,7 +15,7 @@ class RoomcodeController extends Controller
      */
     public function index()
     {
-        $roomcodes = Roomcode::where('date','>=', Carbon::today())->orderBy('date')->orderBy('room_type')->get();
+        $roomcodes = Roomcode::where('date', '>=', Carbon::today())->orderBy('date')->orderBy('room_type')->get();
         $roomcodes->load('branch');
 
         return view('roomcodes.index', ['roomcodes' => $roomcodes]);
@@ -39,24 +39,23 @@ class RoomcodeController extends Controller
      */
     public function store(Request $request, Roomcode $roomcode)
     {
-        if($request->hasFile('file')) {
+        if ($request->hasFile('file')) {
             $roomcode->storeUsingFile($request->file('file'));
         } else {
-            if($request->input('room_type') === '세미나실 3인실') {
+            if ($request->input('room_type') === '세미나실 3인실') {
                 $roomcode->createForAllRoomTypes($request->all(), 1);
-            } elseif($request->input('room_type') === '세미나실 A'){
+            } elseif ($request->input('room_type') === '세미나실 A') {
                 $roomcode->createForAllRoomTypes($request->all(), 2);
             } else {
                 $inputs = $request->all();
                 $inputs['branch_id'] = 1;
 
-                if($request->input('room_type') == '세미나실 A' || $request->input('room_type') == '세미나실 B') {
+                if ($request->input('room_type') == '세미나실 A' || $request->input('room_type') == '세미나실 B') {
                     $inputs['branch_id'] = 2;
                 }
 
                 $roomcode->create($inputs);
             }
-
         }
 
         return back();

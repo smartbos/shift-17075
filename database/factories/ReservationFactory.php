@@ -14,6 +14,6 @@ $factory->define(App\Reservation::class, function (Faker $faker) {
         'room' => array_rand($branch->getRoomTypes()),
         'from' => $from,
         'to' => $to,
-        'branch_id' => $branch->id
+        'branch_id' => $branch->id,
     ];
 });

@@ -110,6 +110,6 @@ return [
         'fetch_order' => 'asc',
         'open' => [
             // 'DISABLE_AUTHENTICATOR' => 'GSSAPI'
-        ]
-    ]
+        ],
+    ],
 ];

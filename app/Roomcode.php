@@ -3,8 +3,8 @@
 namespace App;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Illuminate\Database\Eloquent\Model;
 
 class Roomcode extends Model
 {
@@ -26,10 +26,9 @@ class Roomcode extends Model
                 $this->create([
                     'date' => $row['날짜'],
                     'code' => $code,
-                    'room_type' => $row['룸']
+                    'room_type' => $row['룸'],
                 ]);
             } catch (\Exception $e) {
-
             }
         }
     }
@@ -49,7 +48,7 @@ class Roomcode extends Model
 
         $this->create($inputs);
 
-        if($inputs['room_type'] == '세미나실 3인실') {
+        if ($inputs['room_type'] == '세미나실 3인실') {
             $inputs['room_type'] = '세미나실 6인실';
             $this->create($inputs);
 
@@ -57,7 +56,7 @@ class Roomcode extends Model
             $this->create($inputs);
         }
 
-        if($inputs['room_type'] == '세미나실 A') {
+        if ($inputs['room_type'] == '세미나실 A') {
             $inputs['room_type'] = '세미나실 B';
             $this->create($inputs);
         }

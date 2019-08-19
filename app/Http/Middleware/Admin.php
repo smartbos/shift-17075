@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\User;
 use Closure;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 
 class Admin
@@ -19,7 +19,7 @@ class Admin
     {
         $user = User::find(Auth::id());
 
-        if ( ! $user->is_admin) {
+        if (! $user->is_admin) {
             return redirect('/');
         }
 

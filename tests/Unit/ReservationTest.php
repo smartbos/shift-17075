@@ -2,9 +2,9 @@
 
 namespace Tests\Unit;
 
-use App\Reservation;
 use Carbon\Carbon;
 use Tests\TestCase;
+use App\Reservation;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -27,17 +27,17 @@ class ReservationTest extends TestCase
 
         factory(Reservation::class)->create([
             'name' => 'a',
-            'from' => $reserveTime1
+            'from' => $reserveTime1,
         ]);
 
         factory(Reservation::class)->create([
             'name' => 'b',
-            'from' => $reserveTime2
+            'from' => $reserveTime2,
         ]);
 
         factory(Reservation::class)->create([
             'name' => 'c',
-            'from' => $reserveTime2
+            'from' => $reserveTime2,
         ]);
 
         Carbon::setTestNow($cronTime1);
