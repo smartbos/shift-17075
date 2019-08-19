@@ -115,7 +115,7 @@ class Reservation extends Model
         // 결제완료? 예약취소?
         $sms = explode("\n", $sms);
 
-        if (str_contains($sms[1], '예약취소')) {
+        if (Str::contains($sms[1], '예약취소')) {
             $name = trim($sms[2]);
             $startFrom = Carbon::now()->format('Y.').trim($sms[3]);
             $startFrom = Carbon::createFromFormat('Y.m.d. H:i', $startFrom);
@@ -123,7 +123,7 @@ class Reservation extends Model
             $this->where('name', $name)
                 ->where('from', $startFrom)
                 ->delete();
-        } elseif (str_contains($sms[9], '결제완료')) {
+        } elseif (Str::contains($sms[9], '결제완료')) {
             $data = [
                 'name' => '',
                 'phone' => '',
