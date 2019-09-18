@@ -317,4 +317,9 @@ class Reservation extends Model
 
         return $result;
     }
+
+    public function storeUsingForm($inputs)
+    {
+        $this->create($inputs);
+    }
 }

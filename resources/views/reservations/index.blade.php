@@ -4,6 +4,38 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-4">
+                <div class="card mb-4">
+                    <div class="card-header">예약 정보 직접 입력</div>
+
+                    <div class="card-body">
+                        <form action="/reservations" method="POST">
+                            {{ csrf_field() }}
+                            <div class="form-group">
+                                <select name="branch_id">
+                                    <option value="1">연신내점</option>
+                                    <option value="2">구산역점</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="name" placeholder="이름">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="phone" placeholder="전화번호 뒤4자리">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="room" placeholder="세미나실">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="from" placeholder="시작시간 Y-m-d H:i:s">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="to" placeholder="종료시간 Y-m-d H:i:s">
+                            </div>
+
+                            <input type="submit" class="btn btn-primary" value="등록">
+                        </form>
+                    </div>
+                </div>
                 <div class="card">
                     <div class="card-header">예약 정보 문자로 입력</div>
 

@@ -56,8 +56,10 @@ class ReservationController extends Controller
                 $request->input('branch_id'),
                 $request->input('type', 'default')
             );
-        } else {
+        } elseif($request->input('sms')) {
             $reservation->storeUsingSms($request->input('sms'));
+        } else {
+            $reservation->storeUsingForm($request->all());
         }
 
         return redirect('/reservations');
