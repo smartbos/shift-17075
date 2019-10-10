@@ -11,7 +11,11 @@
 |
 */
 
+use App\Http\Controllers\CrawledReservationController;
+use App\Reservation;
 use Dacastro4\LaravelGmail\Facade\LaravelGmail;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 Route::get('/', function () {
     if (\Illuminate\Support\Facades\Auth::check()) {
@@ -57,3 +61,5 @@ Route::get('/oauth/gmail/logout', function () {
 });
 
 Route::post('/webhook', 'TwilioController@store');
+
+Route::post('/crawl/reservations', [CrawledReservationController::class, 'store']);
