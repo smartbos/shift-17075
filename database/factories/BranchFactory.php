@@ -7,6 +7,6 @@ use Faker\Generator as Faker;
 $factory->define(App\Branch::class, function (Faker $faker) {
     return [
         'name' => $faker->name,
-        'instruction_link' => $faker->word,
+        'instruction_link' => 'https://goo.gl/aCyaTD',
     ];
 });

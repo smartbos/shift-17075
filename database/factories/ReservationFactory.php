@@ -6,7 +6,11 @@ $factory->define(App\Reservation::class, function (Faker $faker) {
     $from = \Carbon\Carbon::parse($faker->date($format = 'Y-m-d', $max = 'now'));
     $to = $from->addHour(1);
 
-    $branch = factory(\App\Branch::class)->create();
+    $branch = factory(\App\Branch::class)->create(
+        [
+            'instruction_link' => 'https://goo.gl/aCyaTD',
+        ]
+    );
 
     return [
         'name' => $faker->name,

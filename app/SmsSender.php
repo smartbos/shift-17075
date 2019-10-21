@@ -41,25 +41,39 @@ class SmsSender
             $content = "[{$branch->name}] {$now->format('m월 d일')}
 {$reservation->from->format('H:i')}~{$reservation->to->format('H:i')} 
 출입코드 {$roomcode->code}
-입장 및 이용방법 {$branch->instruction_link}";
+{$branch->instruction_link}";
 
             if ($customer) {
-                $res = $client->request('POST', 'http://biz.moashot.com/EXT/URLASP/mssendUTF.asp', [
+//                $res = $client->request('POST', 'http://biz.moashot.com/EXT/URLASP/mssendUTF.asp', [
+//                    'form_params' => [
+//                        'uid' => 'ilgonggong',
+//                        'pwd' => 'Lhs81@ahdk',
+////                'commType' => '1',
+////                'commCode' => md5('Lhs81@ahdk'),
+//                        'sendType' => '3',
+//                        'title' => $reservation->name,
+//                        'toNumber' => $customer->phone,
+//                        'contents' => $content,
+//                        'fromNumber' => '01029563707',
+////            'nType' => '2',
+////            'indexCode' => '100',
+////            'returnUrl' => 'http://sms.bookcafe100.com/smsCallback'
+//                    ],
+//                ]);
+
+                $res = $client->request('POST', 'https://apis.aligo.in/send/', [
                     'form_params' => [
-                        'uid' => 'ilgonggong',
-                        'pwd' => 'Lhs81@ahdk',
-//                'commType' => '1',
-//                'commCode' => md5('Lhs81@ahdk'),
-                        'sendType' => '3',
+                        'key' => 'k74g9i3eg6gnuga9kifsj3nfiur9tb0j',
+                        'user_id' => 'smartbosslee',
+                        'sender' => '01029563707',
+                        'receiver' => $customer->phone,
+                        'msg' => $content,
                         'title' => $reservation->name,
-                        'toNumber' => $customer->phone,
-                        'contents' => $content,
-                        'fromNumber' => '01029563707',
-//            'nType' => '2',
-//            'indexCode' => '100',
-//            'returnUrl' => 'http://sms.bookcafe100.com/smsCallback'
-                    ],
+                        'testmode_yn' => 'N'
+                    ]
                 ]);
+
+                return $res;
             }
         }
     }
