@@ -18,7 +18,6 @@
                             {{ csrf_field() }}
                             @method('PUT')
 
-{{ print_r($reservation->branch_id)}}
                             <div class="form-group">
                                 <select name="branch_id">
                                     <option value="1" @if($reservation->branch_id == 1) selected @endif>연신내점</option>
