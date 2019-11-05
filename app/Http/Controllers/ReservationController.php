@@ -83,7 +83,7 @@ class ReservationController extends Controller
      */
     public function edit(Reservation $reservation)
     {
-        //
+        return view('reservations/edit', ['reservation' => $reservation]);
     }
 
     /**
@@ -95,7 +95,8 @@ class ReservationController extends Controller
      */
     public function update(Request $request, Reservation $reservation)
     {
-        //
+        $reservation->update($request->all());
+        return back();
     }
 
     /**
@@ -106,6 +107,7 @@ class ReservationController extends Controller
      */
     public function destroy(Reservation $reservation)
     {
-        //
+        $reservation->delete();
+        return back();
     }
 }

@@ -11,7 +11,7 @@
                         <form action="/reservations" method="POST">
                             {{ csrf_field() }}
                             <div class="form-group">
-                                <select name="branch_id">
+                                <select name="branch_id" class="form-control">
                                     <option value="1">연신내점</option>
                                     <option value="2">구산역점</option>
                                 </select>
@@ -23,7 +23,13 @@
                                 <input type="text" class="form-control" name="phone" placeholder="전화번호 뒤4자리">
                             </div>
                             <div class="form-group">
-                                <input type="text" class="form-control" name="room" placeholder="세미나실">
+                                <select name="room" class="form-control">
+                                    <option value="세미나실 3인실">세미나실 3인실</option>
+                                    <option value="세미나실 6인실">세미나실 6인실</option>
+                                    <option value="세미나실 8인실">세미나실 8인실</option>
+                                    <option value="세미나실 A">세미나실 A</option>
+                                    <option value="세미나실 B">세미나실 B</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <input type="text" class="form-control" name="from" placeholder="시작시간 Y-m-d H:i:s">
@@ -141,6 +147,7 @@
                                         <th>룸</th>
                                         <th>시작시간</th>
                                         <th>종료시간</th>
+                                        <th>관리</th>
                                     </tr>
                                     @endif
                                     <tr>
@@ -149,6 +156,14 @@
                                         <td>{{ $reservation->room }}</td>
                                         <td>{{ $reservation->from }}</td>
                                         <td>{{ $reservation->to }}</td>
+                                        <td class="d-flex">
+                                            <a href="/reservations/{{$reservation->id}}/edit" class="btn btn-link btn-sm">수정</a>
+                                            <form action="/reservations/{{$reservation->id}}" method="POST" class="del-reservation">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="submit" value="삭제" class="btn btn-link btn-sm">
+                                            </form>
+                                        </td>
                                     </tr>
                                     @if($loop->last)
                                 </table>
@@ -161,4 +176,18 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('page-script')
+<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        $('form.del-reservation').submit(function(){
+            let res = confirm('삭제하시겠습니까?');
+            if(!res)
+            {
+                return false;
+            }
+        });
+    });
+</script>
 @endsection
