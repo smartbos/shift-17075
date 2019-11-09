@@ -72,8 +72,6 @@ class SmsSender
                         'testmode_yn' => 'N'
                     ]
                 ]);
-
-                return $res;
             }
         }
     }
