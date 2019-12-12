@@ -39,8 +39,8 @@ class SmsSender
             $branch = Branch::find($reservation->branch_id);
 
             $content = "[{$branch->name}] {$now->format('m월 d일')}
-{$reservation->from->format('H:i')}~{$reservation->to->format('H:i')} 
-출입코드 {$roomcode->code}
+{$reservation->from->format('H:i')}~{$reservation->to->format('H:i')}
+시스템이 개편되어 전화번호를 출입코드로 쓰며 5분전부터 입장 가능합니다.
 {$branch->instruction_link}";
 
             if ($customer) {
