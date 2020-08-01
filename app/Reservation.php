@@ -220,7 +220,7 @@ class Reservation extends Model
             if ($row['상태']) {
                 $insertData = $this->transform($row);
                 $insertData['branch_id'] = $branch_id;
-                if ($row['상태'] == '확정' && $row['결제상태'] == '결제완료') {
+                if ($row['상태'] == '확정') {
                     try {
                         $this->create($insertData);
                     } catch (\PDOException $e) {
