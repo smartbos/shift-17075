@@ -28,12 +28,12 @@ class CrawledReservationController extends Controller
         $reservation = Reservation::where($whereData = $this->makeWhereData($inputs))->first();
 
         if(!$reservation) {
-            if($inputs['state'] == '확정' && $inputs['order_state'] == '결제완료') {
+            if($inputs['state'] == '확정') {
                 Reservation::create($whereData);
                 return 'created';
             }
         } else {
-            if($inputs['state'] != '확정' || $inputs['order_state'] != '결제완료') {
+            if($inputs['state'] != '확정') {
                 $reservation->delete();
                 return 'deleted';
             }
