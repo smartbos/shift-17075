@@ -17,11 +17,11 @@ class CrawledReservationController extends Controller
          * phone
          * date
          * room
-         * order_state
+         * book_number 예약번호
          *
          * find
-         * state == 확정 && order_state == 결제완료 => insert
-         * state != 확정 || order_state != 결제완료 => delete
+         * state == 확정 => insert
+         * state != 확정 => delete
          */
         $inputs = $request->all();
 
@@ -33,7 +33,7 @@ class CrawledReservationController extends Controller
                 return 'created';
             }
         } else {
-            if($inputs['state'] != '확정') {
+            if($inputs['state'] == '취소' && $reservation->book_number == $inputs['book_number']) {
                 $reservation->delete();
                 return 'deleted';
             }
@@ -62,7 +62,8 @@ class CrawledReservationController extends Controller
             'room' => $inputs['room'],
             'from' => $fromTo['from'],
             'to' => $fromTo['to'],
-            'branch_id' => $inputs['branch_id']
+            'branch_id' => $inputs['branch_id'],
+            'book_number' => $inputs['book_number']
         ];
 
         return $return;
